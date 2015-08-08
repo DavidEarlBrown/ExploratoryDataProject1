@@ -1,13 +1,14 @@
-f <- file("household_power_consumption.txt")
-powerdf <- read.csv(f, sep = ";")
-dim(powerdf)
-#now modify date and time and subset to month
-# use strptime() and as.Date() functions.
-library(tidyr)
-library(dplyr)
-powerdfsel <- subset(powerdf,substr(powerdf$Date,1,8) == "1/2/2007"  | substr(powerdf$Date,1,8) == "2/2/2007")
-# no mutate(powerdf,Date = as.Date(Date)) memory issue
-# date format is 6/12/2006;17:24:00
+library(lubridate)
+# set column types for data so does not have to calculate
+colTypes <- c("character", "character", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric")
+pwrdata <- read.table("household_power_consumption.txt", sep = ";", header = TRUE, stringsAsFactors = FALSE, na.strings = "?", comment.char = "", colClasses = colTypes)
+powerdfsel <- pwrdata[pwrdata$Date == "1/2/2007" | pwrdata$Date == "2/2/2007",]
+png(file = "plot1.png", width = 480, height =480)
+par(bg = "white")
+# Initial histogram for plot1
 hist(as.numeric(powerdfsel$Global_active_power)/1000,col = "red",main = "Global Active Power",xlab = "Global Active Power" ~'('~ "Kilowatts/1000" ~')')
-dev.copy(png,"plot1.png")
+# create plot1.png and then close the device to store on disk
+# done in file dev.copy(png,"plot1.png")
 dev.off()
+# This file was created in the workspace for the project but 
+# then copied into my local github repository to synchronize with the github courser project repository.
